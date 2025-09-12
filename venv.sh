@@ -10,7 +10,7 @@ set -l venv_dir "./.venv"
 
 echo "Creating a Conda environment in the directory: $venv_dir"
 
-conda create -p "$venv_dir" python -c conda-forge
+conda create -p "$venv_dir" python -c conda-forge -y
 
 if test $status -eq 0
     echo "The Conda environment has been successfully created."
@@ -18,6 +18,7 @@ if test $status -eq 0
 
     conda activate "$venv_dir"
     echo "The environment has been activated."
+    uv pip install --upgrade pip
     uv pip install -r requirements.txt
 else
     echo "An error occurred while creating the Conda environment."
