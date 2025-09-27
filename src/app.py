@@ -6,6 +6,9 @@ class App:
     
     async def flow(self):
         print(f"Version: {config.VERSION}")
+        print(f"Path Config: {config.paths.path_config}")
+        print(f"File Config: {config.paths.file_config}")
+
 
 
     async def run(self):

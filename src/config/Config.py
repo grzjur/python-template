@@ -1,11 +1,14 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
+from pydantic import Field
+from .Paths import Paths
 
 load_dotenv()
 
 class Config(BaseSettings):
     VERSION: str = "0.0.1"
+    paths: Paths = Field(default_factory=Paths)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
