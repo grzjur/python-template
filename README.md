@@ -1,83 +1,76 @@
 # Python Project Template
 
-A well-structured Python project template with modern development practices and tools. This template provides a solid foundation for building Python applications with proper configuration management, logging, and environment setup.
+A minimal, modern Python project template managed entirely with [uv](https://docs.astral.sh/uv/). It provides a proper `src/` package layout, configuration via Pydantic Settings, an async-first application skeleton, tests, and linting — nothing more.
 
 ## Features
 
-- 🏗️ **Clean Architecture**: Organized project structure with separation of concerns
-- ⚙️ **Configuration Management**: Environment-based configuration using Pydantic Settings
-- 📝 **Logging**: Integrated logging with Logfire
-- 🔄 **Async Support**: Built-in asyncio support for asynchronous operations
-- 🌍 **Environment Variables**: Secure configuration through `.env` files
-- 📦 **Package Management**: Uses uv for fast package installation
-- 🐍 **Virtual Environment**: Automated conda environment setup
-- 🔌 **API Ready**: Pre-configured for multiple AI/ML API integrations
+- **uv-only workflow** — one tool for Python, virtualenv, dependencies, and lockfile (`pyproject.toml` + `uv.lock`)
+- **src layout** — a real installable package (`src/app/`) with absolute imports and a CLI entry point
+- **Configuration management** — Pydantic Settings reading from `.env`, with centralized `Paths`
+- **Async-first** — `asyncio` application skeleton
+- **Tests** — pytest + pytest-asyncio with working examples
+- **Code quality** — ruff for linting and formatting
+- **Optional AI integrations** — `.env.example` ships API key placeholders and `logfire` for observability; remove what you don't use
 
 ## Project Structure
 
 ```
 python-template/
 ├── src/
-│   ├── app.py              # Main application class
-│   ├── main.py             # Application entry point
-│   ├── config/             # Configuration management
-│   │   ├── __init__.py
-│   │   └── Config.py       # Pydantic settings configuration
-│   ├── models/             # Data models and schemas
-│   │   └── __init__.py
-│   └── utils/              # Utility functions and helpers
-│       └── __init__.py
-├── .env.example            # Environment variables template
-├── .gitignore              # Git ignore rules
-├── requirements.txt        # Python dependencies
-├── venv.sh                 # Environment setup script
-└── README.md              # This file
+│   └── app/
+│       ├── main.py             # Entry point (uv run app)
+│       ├── core.py             # Main application class
+│       ├── config/
+│       │   ├── settings.py     # Pydantic settings (reads .env)
+│       │   └── paths.py        # Centralized filesystem paths
+│       ├── models/             # Data models and schemas
+│       └── utils/              # Utility functions and helpers
+├── tests/                      # pytest test suite
+├── .env.example                # Environment variables template
+├── pyproject.toml              # Project metadata, deps, ruff & pytest config
+├── uv.lock                     # Locked dependencies (committed)
+└── LICENSE                     # MIT
 ```
 
 ## Quick Start
 
 ### Prerequisites
 
-- [Conda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/)
-- [UV](https://github.com/astral-sh/uv) (for faster package installation)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) — that's it; uv installs Python itself if needed
 
 ### Setup
 
-1. **Clone the repository:**
-   ```bash
-   git clone git@github.com:grzjur/python-template.git
-   cd python-template
-   ```
+```bash
+git clone git@github.com:grzjur/python-template.git
+cd python-template
 
-2. **Create and activate virtual environment:**
-   ```bash
-   # Make the script executable
-   chmod +x venv.sh
-   
-   # Run the environment setup script
-   ./venv.sh
-   ```
+uv sync                  # creates .venv, installs deps + dev tools
 
-3. **Configure environment variables:**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your actual API keys and configuration
-   ```
+cp .env.example .env     # optional — only if you use AI APIs
 
-4. **Run the application:**
-   ```bash
-   python src/main.py
-   ```
+uv run app               # run the application
+# or: uv run python -m app.main
+```
 
+## Development
 
-## Dependencies
+```bash
+uv run pytest              # run tests
+uv run ruff check .        # lint
+uv run ruff format .       # format
+uv add <package>           # add a dependency
+uv add --group dev <pkg>   # add a dev dependency
+```
 
-The project includes the following main dependencies:
+## Using This Template
 
-- **pydantic-settings**: Configuration management with validation
-- **python-dotenv**: Environment variable loading from `.env` files
-- **logfire**: Modern logging and observability
+When starting a new project from this template, rename the `app` package:
 
+1. Rename the directory: `src/app/` → `src/<your_name>/`
+2. In `pyproject.toml`, update the lines marked `# rename me`: `[project] name`, `[project.scripts]`, and `[tool.hatch.build.targets.wheel] packages`
+3. Replace imports: `grep -rl "from app" src tests | xargs sed -i 's/from app/from <your_name>/g'`
+4. Re-create the environment: `rm -rf .venv uv.lock && uv sync`
+5. Update this README
 
 ## License
 
